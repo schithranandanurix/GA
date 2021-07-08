@@ -79,8 +79,26 @@ def initiate_ga(num_generations,            generation_size,    starting_selfies
 
 
 if __name__ == '__main__':
+
+    from selfies import encoder
+
+    filename = 'datasets/stat6_confirmed_binders.txt'
+
+    with open(filename) as f:
+        content = f.readlines()
+    smiles_list = [x.strip() for x in content] 
+
+    selfies_list = []
+
+    for smi in smiles_list:
+        selfies_list.append(encoder(smi))
+
+    print (selfies_list)
+
         
-    beta_preference = [0] 
+    beta_preference = [16, 24, 32, 50] # we want the molecules to resemble our reference binders more than to simply explore chemical space
+    # thus we set higher beta values from 16-50 such that we can observe whether more importance on logP SAS or QED (16) 
+    # is better than optimizing to match current binders (no importance on properties is defined as beta=50)
     num_iterations  = 1
 
     results_dir = evo.make_clean_results_dir()
@@ -97,16 +115,17 @@ if __name__ == '__main__':
             writer = SummaryWriter()   
     
             # Initiate the Genetic Algorithm
-            smiles_all_counter = initiate_ga(    num_generations            = 1000,
+            smiles_all_counter = initiate_ga(    num_generations            = 200,
                                                  generation_size            = 500,
-                                                 starting_selfies           = [encoder('C')],
-                                                 max_molecules_len          = 81,
+                                                 starting_selfies           = selfies_list, # pass reference binders
+                                                 max_molecules_len          = 100, #changed to 100 as binders are all >81 length
                                                  disc_epochs_per_generation = 10,
                                                  disc_enc_type              = 'properties_rdkit',         # 'selfies' or 'smiles' or 'properties_rdkit'
                                                  disc_layers                = [100, 10],
                                                  training_start_gen         = 0,                          # generation index to start training discriminator
                                                  device                     = 'cpu',
-                                                 properties_calc_ls         = ['logP', 'SAS', 'RingP'],   # None: No properties ; 'logP', 'SAS', 'RingP', 'QED'
+                                                 # pass all penalties for now since I want to see ring size, synthesizability, drug-likeness and logP
+                                                 properties_calc_ls         = ['logP', 'SAS', 'QED' 'RingP'],   # None: No properties ; 'logP', 'SAS', 'RingP', 'QED'
                                                  num_processors             = multiprocessing.cpu_count(),
                                                  beta                       = beta,
                                                  max_fitness_collector      = max_fitness_collector,
