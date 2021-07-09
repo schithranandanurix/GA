@@ -69,10 +69,14 @@ def do_x_training_steps(data_x, data_y, net, optimizer, loss_func, steps, graph_
     
     data_x = torch.tensor(data_x.astype(np.float32), device=device)
     data_y = torch.tensor(data_y, device=device, dtype=torch.float)
+
+    data_y = data_y.unsqueeze(-1) # -1 adds an additional dimension to tensor
     
     net.train()
     for t in range(steps):
         predictions = net(data_x)
+        print(predictions.shape)
+        print(data_y.shape)
         loss = loss_func(predictions, data_y)
         
         # TensorBoard graphing (loss and weights histogram)

@@ -1,5 +1,5 @@
 import os
-from selfies import decoder 
+from selfies import encoder
 import time
 import multiprocessing
 import torch
@@ -8,6 +8,7 @@ from selfies import encoder
 import discriminator as D
 import evolution_functions as evo
 import generation_props as gen_func
+from selfies import decoder
 
 
 
@@ -79,9 +80,6 @@ def initiate_ga(num_generations,            generation_size,    starting_selfies
 
 
 if __name__ == '__main__':
-
-    from selfies import encoder
-
     filename = 'datasets/stat6_confirmed_binders.txt'
 
     with open(filename) as f:
@@ -125,7 +123,7 @@ if __name__ == '__main__':
                                                  training_start_gen         = 0,                          # generation index to start training discriminator
                                                  device                     = 'cpu',
                                                  # pass all penalties for now since I want to see ring size, synthesizability, drug-likeness and logP
-                                                 properties_calc_ls         = ['logP', 'SAS', 'QED' 'RingP'],   # None: No properties ; 'logP', 'SAS', 'RingP', 'QED'
+                                                 properties_calc_ls         = ['logP', 'SAS', 'QED', 'RingP'],   # None: No properties ; 'logP', 'SAS', 'RingP', 'QED'
                                                  num_processors             = multiprocessing.cpu_count(),
                                                  beta                       = beta,
                                                  max_fitness_collector      = max_fitness_collector,

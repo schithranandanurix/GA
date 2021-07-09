@@ -161,7 +161,7 @@ def fitness(molecules_here,    properties_calc_ls,
 
         # Add SAS and Ring Penalty 
         # Note: The fitness function must include the properties of var. 'properties_calc_ls'
-        fitness = (logP_norm) - (SAS_norm) - (RingP_norm)
+        fitness = (logP_norm) - (SAS_norm) # - (RingP_norm) i comment out ringp as i don't want to constrain ring size (based on discussions with angelica)
     
         # Plot fitness without discriminator 
         writer.add_scalar('max fitness without discr',  max(fitness),     generation_index)
@@ -464,7 +464,6 @@ def obtain_next_gen_molecules(order,           to_replace,     to_keep,
     selfies_ordered (list)  : list of SELFIE molecules, ordered by fitness 
     smiles_ordered (list)   : list of SMILE molecules, ordered by fitness 
     max_molecules_len (int) : length of largest molecule 
-
     
     Returns:
     smiles_mutated (list): next generation of mutated molecules as SMILES
